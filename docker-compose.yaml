@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+
+  rabbitmq:
+    image: "rabbitmq:4.0.2-management"
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+
+  generator:
+    build: ./generator
+    container_name: generator
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      USERNAME: admin
+      PASSWORD: admin
+    command: python main.py
