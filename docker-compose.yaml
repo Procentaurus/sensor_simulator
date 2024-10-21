@@ -20,4 +20,5 @@ services:
       RABBITMQ_HOST: rabbitmq
       USERNAME: admin
       PASSWORD: admin
+      QUEUE_NAME: kjukjukju
     command: python main.py
