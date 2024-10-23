@@ -20,5 +20,29 @@ services:
       RABBITMQ_HOST: rabbitmq
       USERNAME: admin
       PASSWORD: admin
-      QUEUE_NAME: kjukjukju
+      QUEUE_NAME: queue_sensors
     command: python main.py
+    
+  mongodb:
+    image: mongo:8.0
+    container_name: mongodb
+    restart: always
+
+  onboard-system:
+    build: ./OnboardSystem
+    container_name: onboard-system
+    depends_on:
+      - rabbitmq
+      - mongodb
+    environment:
+      ASPNETCORE_URLS: http://+:5109
+      OnboardDatabase__ConnectionString: mongodb://mongodb:27017
+      OnboardDatabase__DatabaseName: Onboard
+      OnboardDatabase__SensorsCollectionName: Sensors
+      rabbitmq__host: rabbitmq
+      rabbitmq__username: admin
+      rabbitmq__password: admin
+      rabbitmq__queueName: queue_sensors
+    ports:
+      - "5109:5109"
+    restart: always
