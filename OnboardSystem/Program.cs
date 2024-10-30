@@ -7,6 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 var rabbitMqSettings = builder.Configuration.GetSection("RabbitMQ").Get<RabbitMqSettings>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
+        });
+});
 builder.Services.AddSingleton<WebSocketConnectionManager>();
 builder.Services.Configure<OnboardDatabaseSettings>(builder.Configuration.GetSection("OnboardDatabase"));
 builder.Services.AddSingleton<SensorService>();
@@ -43,8 +51,8 @@ var app = builder.Build();
 app.UseWebSockets();
 /**
  * https://copilot.microsoft.com/
- * prompt: podaj przyk³ad handlera na nawi¹zywanie po³¹czenia webSocket, 
- * aby zapisaæ z jakimi sesjami jest nawi¹zane po³¹czenie
+ * prompt: podaj przykï¿½ad handlera na nawiï¿½zywanie poï¿½ï¿½czenia webSocket, 
+ * aby zapisaï¿½ z jakimi sesjami jest nawiï¿½zane poï¿½ï¿½czenie
 */
 app.Use(async (context, next) =>
 {
@@ -75,6 +83,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors();
+
 app.UseAuthorization();
 
 app.MapControllers();
@@ -83,8 +93,8 @@ app.Run();
 
 /**
  * https://copilot.microsoft.com/
- * prompt: podaj przyk³ad handlera na nawi¹zywanie po³¹czenia webSocket, 
- * aby zapisaæ z jakimi sesjami jest nawi¹zane po³¹czenie
+ * prompt: podaj przykï¿½ad handlera na nawiï¿½zywanie poï¿½ï¿½czenia webSocket, 
+ * aby zapisaï¿½ z jakimi sesjami jest nawiï¿½zane poï¿½ï¿½czenie
 */
 async Task HandleWebSocket(HttpContext context, WebSocket webSocket, string connectionId)
 {
