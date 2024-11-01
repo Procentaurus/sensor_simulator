@@ -19,6 +19,7 @@ public class SensorController : ControllerBase
     [HttpGet]
     public List<Sensor> GetAll(
         [FromQuery] List<int> sensorIds,
+        [FromQuery] List<long> timestamp,
         [FromQuery] double minValue = -999,
         [FromQuery] double maxValue = -999,
         [FromQuery] bool orderByTime = false,
@@ -26,7 +27,7 @@ public class SensorController : ControllerBase
     {
         List<Sensor> result = _sensorService.GetAllAsync().Result;
 
-        result = filterData(result, sensorIds, minValue, maxValue);
+        result = filterData(result, sensorIds, timestamp, minValue, maxValue);
         result = sortData(result, orderByTime, orderById);
 
         return result;
@@ -35,12 +36,13 @@ public class SensorController : ControllerBase
     [HttpGet("csv")]
     public IActionResult GetAllCsv(
         [FromQuery] List<int> sensorIds,
+        [FromQuery] List<long> timestamp,
         [FromQuery] double minValue = -999,
         [FromQuery] double maxValue = -999,
         [FromQuery] bool orderByTime = false,
         [FromQuery] bool orderById = false)
     {
-        List<Sensor> result = GetAll(sensorIds, minValue, maxValue, orderByTime, orderById);
+        List<Sensor> result = GetAll(sensorIds, timestamp, minValue, maxValue, orderByTime, orderById);
 
         var csvFormat = new StringBuilder();
         csvFormat.AppendLine("dataId, id, value, unit, timestamp");
@@ -56,6 +58,7 @@ public class SensorController : ControllerBase
     private List<Sensor> filterData(
         List<Sensor> sensorsList,
         List<int> sensorIds,
+        List<long> timestamp,
         double minValue,
         double maxValue)
     {
@@ -66,6 +69,20 @@ public class SensorController : ControllerBase
             foreach (Sensor sensor in sensorsList)
             {
                 if (sensorIds.Contains(sensor.id))
+                {
+                    filteredResult.Add(sensor);
+                }
+            }
+            sensorsList = filteredResult;
+        }
+
+        if (timestamp != null && timestamp.Count > 0)
+        {
+            List<Sensor> filteredResult = new List<Sensor>();
+
+            foreach (Sensor sensor in sensorsList)
+            {
+                if (timestamp.Contains(sensor.timestamp))
                 {
                     filteredResult.Add(sensor);
                 }
