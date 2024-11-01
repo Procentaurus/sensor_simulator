@@ -23,6 +23,7 @@ To receive filtered or sorted data send GET request on port 5109 e.g.:
 
 Available (optional) arguments:
 - sensorIds e.g. `sensorIds=1&sensorIds=2&sensorIds=3`
+- timestamp e.g. `timestamp=1&timestamp=2&timestamp=3`
 - minValue e.g. `minValue=0`
 - maxValue e.g. `maxValue=0`
 - orderByTime e.g. `orderByTime=true`
