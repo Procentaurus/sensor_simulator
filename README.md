@@ -1,9 +1,11 @@
 Simple simulator of WW2 plane's on-board gear sensors. All sensors are generating randomly changing values and sending them to the configured RabbitMQ queues.
 
 To run:
-`docker-compose up`
+- `docker-compose up -d rabbitmq mongodb onboard-system`
+- wait a moment
+- `docker-compose up -d generator`
 
-## How to conntect with OnboardSystem
+## How to connect with OnboardSystem
 
 ### WebSocket
 
