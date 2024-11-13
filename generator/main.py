@@ -1,6 +1,5 @@
 from sensor import Sensor
 import threading
-import time
 
 
 def main():

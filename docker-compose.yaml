@@ -27,6 +27,9 @@ services:
     image: mongo:8.0
     container_name: mongodb
     restart: always
+    volumes: 
+      - type: tmpfs
+        target: /data/db
 
   onboard-system:
     build: ./OnboardSystem
