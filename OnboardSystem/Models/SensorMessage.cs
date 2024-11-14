@@ -20,14 +20,18 @@ public class SensorConsumer : IConsumer<SensorMessage>
 
     private readonly SensorService _sensorService;
 
+    private readonly BlockchainService _blockchainService;
+
     private static readonly Stopwatch stopwatch = new Stopwatch();
 
     public SensorConsumer(
         WebSocketConnectionManager webSocketConnectionManager, 
-        SensorService sensorService)
+        SensorService sensorService,
+        BlockchainService blockchainService)
     {
         _webSocketConnectionManager = webSocketConnectionManager;
         _sensorService = sensorService;
+        _blockchainService = blockchainService;
         stopwatch.Start();
     }
 
@@ -43,6 +47,7 @@ public class SensorConsumer : IConsumer<SensorMessage>
                 (stopwatch.ElapsedMilliseconds / 1000));
 
         await _sensorService.CreateAsync(receivedData);
+        await _blockchainService.RewardSensor(context.Message.Id);
 
         List<Sensor> result = _sensorService.GetAllAsync().Result;
 

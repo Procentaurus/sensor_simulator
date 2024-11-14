@@ -18,6 +18,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddSingleton<WebSocketConnectionManager>();
 builder.Services.Configure<OnboardDatabaseSettings>(builder.Configuration.GetSection("OnboardDatabase"));
 builder.Services.AddSingleton<SensorService>();
+builder.Services.AddSingleton<BlockchainService>();
 builder.Services.AddControllers();
 
 builder.Services.AddMassTransit(x =>
