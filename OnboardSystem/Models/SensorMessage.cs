@@ -44,6 +44,24 @@ public class SensorConsumer : IConsumer<SensorMessage>
 
         await _sensorService.CreateAsync(receivedData);
 
+        List<Sensor> result = _sensorService.GetAllAsync().Result;
+
+        List<Sensor> filteredResult = new List<Sensor>();
+
+        foreach (Sensor sensor in result)
+        {
+            if (sensor.id == receivedData.id)
+            {
+                filteredResult.Add(sensor);
+            }
+        }
+        result = filteredResult;
+
+        result.Sort((sensor1, sensor2) => (int)(sensor1.timestamp - sensor2.timestamp));
+
+        double avgValue = result.Take(100).ToList().Average(sensor => sensor.value);
+        receivedData.avgValue = avgValue;
+
         var messageJson = JsonSerializer.Serialize(receivedData);
         var buffer = Encoding.UTF8.GetBytes(messageJson);
 
