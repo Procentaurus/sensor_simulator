@@ -27,3 +27,7 @@ Available (optional) arguments:
 - maxValue e.g. `maxValue=0`
 - orderByTime e.g. `orderByTime=true`
 - orderById e.g. `orderById=true`
+
+To receive latest data for each sensor send GET request on port 5109:
+
+- `http://localhost:5109/api/sensors/latest` (latest values)

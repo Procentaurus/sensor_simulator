@@ -57,7 +57,7 @@ public class SensorConsumer : IConsumer<SensorMessage>
         }
         result = filteredResult;
 
-        result.Sort((sensor1, sensor2) => (int)(sensor1.timestamp - sensor2.timestamp));
+        result.Sort((sensor1, sensor2) => (int)(sensor2.timestamp - sensor1.timestamp));
 
         double avgValue = result.Take(100).ToList().Average(sensor => sensor.value);
         receivedData.avgValue = avgValue;
