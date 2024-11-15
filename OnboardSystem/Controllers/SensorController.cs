@@ -62,7 +62,7 @@ public class SensorController : ControllerBase
 
         for (int i = 1; i <= 16; i++)
         {
-            List<Sensor> result = GetAll([i]);
+            List<Sensor> result = GetAll([i], null);
 
             result.Sort((sensor1, sensor2) => (int)(sensor2.timestamp - sensor1.timestamp));
 
