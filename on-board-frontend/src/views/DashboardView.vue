@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Dataset, DatasetItem, DatasetShow, DatasetInfo } from 'vue-dataset'
 
 const currentMessage = ref('No message')
@@ -61,44 +61,12 @@ const cols = ref([
   },
 ])
 
-const sortBy = computed(() => {
-  return cols.value.reduce((acc, o) => {
-    if (o.sort) {
-      o.sort === 'asc' ? acc.push(o.field) : acc.push('-' + o.field)
-    }
-
-    return acc
-  }, [])
-})
-
-function clickSort(event, i) {
-  let toset
-  const sortEl = cols[i]
-
-  if (!event.shiftKey) {
-    cols.value.forEach(o => {
-      if (o.field !== sortEl.field) {
-        o.sort = ''
-      }
-    })
-  }
-  if (!sortEl.sort) {
-    toset = 'asc'
-  }
-  if (sortEl.sort === 'desc') {
-    toset = event.shiftKey ? '' : 'asc'
-  }
-  if (sortEl.sort === 'asc') {
-    toset = 'desc'
-  }
-  sortEl.sort = toset
-}
 </script>
 
 <template>
   <div class="dashboard">
     <h1>This is the dashboard page</h1>
-    <Dataset :ds-data="latestSensorData" :ds-sortby="sortBy">
+    <Dataset :ds-data="latestSensorData">
       <div class="row data-set-header">
         <DatasetShow :ds-show-entries="25" />
       </div>
@@ -107,15 +75,10 @@ function clickSort(event, i) {
           <thead>
             <tr>
               <th
-                v-for="(th, index) in cols"
+                v-for="th in cols"
                 :key="th.field"
-                :class="['sort', th.sort]"
-                @click="clickSort($event, index)"
               >
                 {{ th.name }}
-                <div class="column-buttons float-right">
-                  <i class="gg-select float-right"></i>
-                </div>
               </th>
             </tr>
           </thead>
