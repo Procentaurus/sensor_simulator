@@ -22,4 +22,6 @@ public class Sensor
     public string unit { get; set; } = null!;
 
     public long timestamp { get; set; }
+
+    public double avgValue { get; set; }
 }

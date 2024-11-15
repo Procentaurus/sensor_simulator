@@ -55,6 +55,26 @@ public class SensorController : ControllerBase
         return File(Encoding.UTF8.GetBytes(csvFormat.ToString()), "text/csv", "data.csv");
     }
 
+    [HttpGet("latest")]
+    public List<Sensor> GetLatest()
+    {
+        List<Sensor> latestData = new List<Sensor>();
+
+        for (int i = 1; i <= 16; i++)
+        {
+            List<Sensor> result = GetAll([i]);
+
+            result.Sort((sensor1, sensor2) => (int)(sensor2.timestamp - sensor1.timestamp));
+
+            Sensor latestSensor = new Sensor(Guid.Parse(result[0].dataId), i, result[0].value, result[0].unit, result[0].timestamp);
+            latestSensor.avgValue = result.Take(100).Average(sensor => sensor.value);
+
+            latestData.Add(latestSensor);
+        }
+
+        return latestData;
+    }
+
     private List<Sensor> filterData(
         List<Sensor> sensorsList,
         List<int> sensorIds,
