@@ -34,3 +34,7 @@ Available (optional) arguments:
 To receive latest data for each sensor send GET request on port 5109:
 
 - `http://localhost:5109/api/sensors/latest` (latest values)
+
+### Frontend
+
+Frontend is available at `http://localhost:8080`
