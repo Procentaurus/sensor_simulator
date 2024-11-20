@@ -39,6 +39,7 @@ public class BlockchainService
     private readonly Task _initializeTask;
     private BigInteger nonce;
     private BigInteger gas;
+    private BigInteger gasPrice;
     private static readonly object lockObject = new object();
 
     [Function("transfer", "bool")]
@@ -59,9 +60,9 @@ public class BlockchainService
         account = new Account(mainWalletPrivateKey);
         web3 = new Web3(account, blockchainEndpoint);
         _initializeTask = InitializeAsync();
-        if (int.TryParse(System.Environment.GetEnvironmentVariable("NUMBER_OF_SENSORS"), out int result))
+        if (int.TryParse(System.Environment.GetEnvironmentVariable("NUMBER_OF_SENSORS"), out int sensorCountResult))
         {
-            numberOfSensors = result;
+            numberOfSensors = sensorCountResult;
             for (int i = 1; i <= numberOfSensors; i++)
             {
                 string envVarName = $"SENSOR_{i}_PUBLIC_KEY";
@@ -71,6 +72,16 @@ public class BlockchainService
         else
         {
             throw new System.Exception("Cannot process number of sensors env variable");
+        }
+
+        if (int.TryParse(System.Environment.GetEnvironmentVariable("GAS_PRICE"), out int gasPriceResult))
+        {
+            gasPrice =  new BigInteger(gasPriceResult);
+
+        }
+        else
+        {
+            throw new System.Exception("Cannot process gasPrice env variable");
         }
     }
 
@@ -91,6 +102,7 @@ public class BlockchainService
     public async Task RewardSensor(int id)
     {
         await _initializeTask;
+
         Random random = new Random();
         int milliseconds = random.Next(300);
         Task.Delay(milliseconds).Wait();
@@ -111,7 +123,7 @@ public class BlockchainService
                 To = sensorAddress,
                 TokenAmount = new BigInteger(1e18)
             };
-            transfer.GasPrice = Nethereum.Web3.Web3.Convert.ToWei(5, UnitConversion.EthUnit.Gwei);
+            transfer.GasPrice = Nethereum.Web3.Web3.Convert.ToWei(gasPrice, UnitConversion.EthUnit.Gwei);
             transfer.Nonce = currentNonce;
             transfer.Gas = gas;
             var hash = await transferHandler.SendRequestAsync(contractAddress, transfer);
